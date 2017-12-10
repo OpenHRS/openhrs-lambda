@@ -19,14 +19,14 @@ exports.handler = (event, context, callback) => {
         index: 'hrs',
         type: 'statutes',
         body: {
-            size: event["size"],
+            size: event["queryStringParameters"]["size"],
             query: {
                 bool: {
                     should: [
                         {
                             match_phrase_prefix: {
                                 sec_text: {
-                                    query: event["input"],
+                                    query: event["queryStringParameters"]["input"],
                                     boost:7
                                 }
                             }
@@ -34,7 +34,7 @@ exports.handler = (event, context, callback) => {
                         {
                             match: {
                                 section_text: {
-                                query: event["input"],
+                                query: event["queryStringParameters"]["input"],
                                 fuzziness: 1,
                                 boost:5
                                 }
@@ -43,7 +43,7 @@ exports.handler = (event, context, callback) => {
                         {
                             match: {
                                 chapt_name: {
-                                    query: event["input"],
+                                    query: event["queryStringParameters"]["input"],
                                     fuzziness: 1,
                                     boost: 5
                                 }
@@ -52,7 +52,7 @@ exports.handler = (event, context, callback) => {
                         {
                             match_phrase: {
                                 chapt_sec: {
-                                    query: event["input"],
+                                    query: event["queryStringParameters"]["input"],
                                     boost: 10
                                 }
                             }
@@ -60,20 +60,20 @@ exports.handler = (event, context, callback) => {
                         {
                             match: {
                                 text: {
-                                    query: event["input"],
+                                    query: event["queryStringParameters"]["input"],
                                     fuzziness: 1
                                 }
                             }
                         },
                         {
                             common: {
-                                query: event["input"]
+                                query: event["queryStringParameters"]["input"]
                             }
                         },
                         {
                             match: {
                                 chapt_num: {
-                                    query: event["input"],
+                                    query: event["queryStringParameters"]["input"],
                                     boost: 9
                                 }
                             }
@@ -81,7 +81,7 @@ exports.handler = (event, context, callback) => {
                         {
                             match: {
                                 sec_num: {
-                                    query: event["input"],
+                                    query: event["queryStringParameters"]["input"],
                                     boost: 5
                                 }
                             }
@@ -95,6 +95,31 @@ exports.handler = (event, context, callback) => {
             }
         }
     }, function(err, res) {
-        callback(null, res.hits.hits);
+        var response = {
+            "isBase64Encoded": false,
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : true
+            },
+            "body": JSON.stringify(res.hits.hits)
+        };
+
+        var response_error = {
+            "isBase64Encoded": false,
+            "statusCode": 400,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : true
+            },
+            "body": JSON.stringify(err)
+        };
+        
+        if (err)
+            callback(null, response_error);
+        else
+            callback(null, response);
     });
 };

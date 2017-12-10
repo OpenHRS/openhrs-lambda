@@ -2,8 +2,10 @@ let test = require('./index.js');
 
 let event = {
     "queryStringParameters": {
-        "size": 1,
-        "input": "1-26"
+        "div": "1",
+        "title": "1",
+        "chapt": "1",
+        "sec": "1"
     }
 };
 
