@@ -20,7 +20,7 @@ exports.handler = (event, context, callback) => {
         type: 'statutes',
         body: {
             sort: [
-                {year_num: "asc"}
+                {year_num: "desc"}
             ],
             query: {
                 bool: {
