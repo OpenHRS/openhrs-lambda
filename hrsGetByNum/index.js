@@ -25,8 +25,6 @@ exports.handler = (event, context, callback) => {
             query: {
                 bool: {
                     filter: [
-                        { term: {div_num: event["queryStringParameters"]["div"]}},
-                        { term: {title_num: event["queryStringParameters"]["title"]}},
                         { term: {chapt_num: event["queryStringParameters"]["chapt"]}},
                         { term: {sec_num: event["queryStringParameters"]["sec"]}}
                     ]
